@@ -4,8 +4,15 @@ import '../styles/ARViewer.css';
 import { initializeApp, getApps } from 'firebase/app';
 import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
 
+// Firebase configuration
 const firebaseConfig = {
-  // Your firebase config
+  apiKey: "AIzaSyCfWYRWOQyNrn9WGv3Wfz_EM47ZpbL_Yqs",
+  authDomain: "virtual-world-84ce0.firebaseapp.com",
+  projectId: "virtual-world-84ce0",
+  storageBucket: "virtual-world-84ce0.appspot.com",
+  messagingSenderId: "306111432374",
+  appId: "1:306111432374:web:1b7d4cfea3b7ab7ef123f7",
+  measurementId: "G-1K1M3CNJR7"
 };
 
 let app;
