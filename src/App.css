@@ -36,3 +36,14 @@
     transform: rotate(360deg);
   }
 }
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .App-header {
+    font-size: calc(8px + 2vmin);
+  }
+  
+  .App-logo {
+    height: 30vmin;
+  }
+}
