@@ -169,7 +169,9 @@ const ARViewer = () => {
           >
             View in HoloLens
           </button>
-          <p>Use a WebXR-compatible browser (e.g., Microsoft Edge) on HoloLens to access this view.</p>
+          <p className="ar-support-text">
+            Use a WebXR-compatible browser (e.g., Microsoft Edge) on HoloLens to access this view.
+          </p>
         </div>
       )}
 
