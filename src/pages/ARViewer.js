@@ -4,18 +4,10 @@ import '../styles/ARViewer.css';
 import { initializeApp, getApps } from 'firebase/app';
 import { getStorage, ref, listAll, getDownloadURL } from 'firebase/storage';
 
-// Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCfWYRWOQyNrn9WGv3Wfz_EM47ZpbL_Yqs",
-  authDomain: "virtual-world-84ce0.firebaseapp.com",
-  projectId: "virtual-world-84ce0",
-  storageBucket: "virtual-world-84ce0.appspot.com",
-  messagingSenderId: "306111432374",
-  appId: "1:306111432374:web:1b7d4cfea3b7ab7ef123f7",
-  measurementId: "G-1K1M3CNJR7"
+  // Your firebase config
 };
 
-// Initialize Firebase if it hasn't been initialized already
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
@@ -31,6 +23,7 @@ const ARViewer = () => {
   const [loading, setLoading] = useState(false);
   const [isWebXRSupported, setIsWebXRSupported] = useState(false);
   const inputFileRef = useRef(null);
+  const modelViewerRef = useRef(null); // Reference for model-viewer
 
   // Check WebXR support for AR glass compatibility
   useEffect(() => {
@@ -52,19 +45,16 @@ const ARViewer = () => {
     }
   };
 
-  // Trigger file input for local upload
   const triggerFileInput = () => {
     inputFileRef.current.click();
   };
 
-  // Handle file upload from Firebase
   const handleFirebaseFileUpload = async (url) => {
     setLoading(true);
     setModelSrc(url);
     setLoading(false);
   };
 
-  // Load available files from Firebase
   const loadFirebaseFiles = async () => {
     const listRef = ref(storage, '/');
     const res = await listAll(listRef);
@@ -77,40 +67,88 @@ const ARViewer = () => {
     setFirebaseFiles(files);
   };
 
-  // Load Firebase files on component mount
   useEffect(() => {
     loadFirebaseFiles();
   }, []);
 
   // Start AR session using WebXR
-  const startARSession = async () => {
-    if (!navigator.xr) {
-      alert('WebXR is not supported on this device.');
-      return;
-    }
+const startARSession = async () => {
+  if (!navigator.xr) {
+    alert('WebXR is not supported on this device.');
+    return;
+  }
 
-    try {
-      const xrSession = await navigator.xr.requestSession('immersive-ar', {
-        requiredFeatures: ['local-floor']
-      });
+  try {
+    const xrSession = await navigator.xr.requestSession('immersive-ar', {
+      requiredFeatures: ['local-floor']
+    });
 
-      const modelViewer = document.querySelector('model-viewer');
-      modelViewer.setAttribute('xr', '');
-      modelViewer.xrSession = xrSession;
-      modelViewer.activateAR();
+    const modelViewer = modelViewerRef.current; // Access model-viewer ref
+    modelViewer.setAttribute('xr', '');
+    modelViewer.xrSession = xrSession;
+    modelViewer.activateAR();
 
-      xrSession.addEventListener('end', () => {
-        modelViewer.xrSession = null;
-      });
-    } catch (error) {
-      console.error('Failed to start AR session:', error);
-      alert('Unable to start AR session on this device.');
+    xrSession.addEventListener('end', () => {
+      modelViewer.xrSession = null;
+    });
+  } catch (error) {
+    console.error('Failed to start AR session:', error);
+    alert('Unable to start AR session on this device.');
+  }
+};
+
+
+  // Gesture-based interaction setup
+// Gesture interaction handlers
+useEffect(() => {
+  const modelViewer = modelViewerRef.current;
+  let initialTouch = null;
+
+  const handleGestureStart = (event) => {
+    if (event.touches.length === 1) {
+      initialTouch = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      };
     }
   };
 
+  const handleGestureMove = (event) => {
+    if (initialTouch && event.touches.length === 1) {
+      const deltaX = event.touches[0].clientX - initialTouch.x;
+      const deltaY = event.touches[0].clientY - initialTouch.y;
+
+      // Adjust the rotation based on gesture movement
+      const rotationX = deltaY * 0.1; // Adjust rotation sensitivity as needed
+      const rotationY = deltaX * 0.1;
+
+      modelViewer.cameraOrbit = `${rotationY}deg ${rotationX}deg auto`;
+    }
+  };
+
+  const handleGestureEnd = () => {
+    initialTouch = null; // Reset initial touch point
+  };
+
+    if (modelViewer) {
+      modelViewer.addEventListener('pointerdown', handleGestureStart);
+      modelViewer.addEventListener('pointermove', handleGestureMove);
+      modelViewer.addEventListener('pointerup', handleGestureEnd);
+      modelViewer.addEventListener('pointercancel', handleGestureEnd);
+    }
+
+    return () => {
+      if (modelViewer) {
+        modelViewer.removeEventListener('pointerdown', handleGestureStart);
+        modelViewer.removeEventListener('pointermove', handleGestureMove);
+        modelViewer.removeEventListener('pointerup', handleGestureEnd);
+        modelViewer.removeEventListener('pointercancel', handleGestureEnd);
+      }
+    };
+  }, []);
+
   return (
     <div className="ar-viewer-container">
-      {/* Local file upload button */}
       <button className="upload-button" onClick={triggerFileInput}>Upload 3D Model</button>
       <input
         type="file"
@@ -119,8 +157,6 @@ const ARViewer = () => {
         ref={inputFileRef}
         onChange={handleFileUpload}
       />
-
-      {/* Firebase file selection */}
       <div className="firebase-file-selector">
         <label>Select 3D Model from Firebase:</label>
         <select onChange={(e) => handleFirebaseFileUpload(e.target.value)}>
@@ -133,10 +169,10 @@ const ARViewer = () => {
         </select>
       </div>
 
-      {/* Model Viewer */}
       {modelSrc && (
         <div className="model-viewer-container">
           <model-viewer
+            ref={modelViewerRef}
             src={modelSrc}
             alt="A 3D model"
             ar
@@ -160,7 +196,6 @@ const ARViewer = () => {
         </div>
       )}
 
-      {/* AR Glasses Compatibility Check */}
       {isWebXRSupported && modelSrc && (
         <div className="hololens-ar">
           <button
