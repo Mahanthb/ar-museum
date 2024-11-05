@@ -10,16 +10,31 @@ const NavbarContainer = styled.nav`
   padding: 1rem 2rem;
   background: #2a2a72;
   color: #ffffff;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
 `;
 
 const NavLinks = styled.div`
+  display: flex;
+
   a {
     margin: 0 1rem;
     text-decoration: none;
     color: #ffffff;
     font-weight: bold;
+
     &:hover {
       color: #e9c46a;
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    a {
+      margin: 0.5rem 0;
     }
   }
 `;
