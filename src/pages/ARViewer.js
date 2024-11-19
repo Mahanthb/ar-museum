@@ -31,6 +31,7 @@ const MuseumViewer = () => {
   const [isWebXRSupported, setIsWebXRSupported] = useState(false);
   const [modelHistory, setModelHistory] = useState({});
   const [historyText, setHistoryText] = useState('');
+  const [isReading, setIsReading] = useState(false);
   const inputFileRef = useRef(null);
   const modelViewerRef = useRef(null); // Reference for model-viewer
 
@@ -96,23 +97,30 @@ const MuseumViewer = () => {
   };
 
   // Text-to-speech function
+// Text-to-speech function with cancel functionality
 const readAloud = (text) => {
-    // Cancel any ongoing speech
-    if (window.speechSynthesis.speaking) {
+    if (isReading) {
+      // If already reading, stop the speech
       window.speechSynthesis.cancel();
+      setIsReading(false);  // Update state to reflect the reading status
+    } else {
+      // Cancel any ongoing speech
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+      }
+
+      // Create new SpeechSynthesisUtterance object
+      const speech = new SpeechSynthesisUtterance();
+      speech.text = text;
+      speech.lang = 'en-US';
+      speech.rate = 1;
+      speech.pitch = 1;
+
+      // Start speaking
+      window.speechSynthesis.speak(speech);
+      setIsReading(true);  // Update state to reflect that speech is playing
     }
-  
-    // Create new SpeechSynthesisUtterance object
-    const speech = new SpeechSynthesisUtterance();
-    speech.text = text;
-    speech.lang = 'en-US';
-    speech.rate = 1;
-    speech.pitch = 1;
-  
-    // Start speaking
-    window.speechSynthesis.speak(speech);
-  };
- 
+  }; 
 
   // Start AR session using WebXR
   const startARSession = async () => {
