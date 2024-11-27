@@ -1,70 +1,127 @@
-# Getting Started with Create React App
+# AR Museum: React Application for 3D Model Viewing and Editing
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Project Overview
 
-## Available Scripts
+The **AR Museum** is a React-based application that allows users to view, edit, and interact with 3D models in both desktop and augmented reality (AR) environments. Users can upload local 3D model files, select models from Firebase storage, and customize the viewing experience with various controls and editing features.
 
-In the project directory, you can run:
+This project includes two main components:
+1. **MuseumViewer**: For selecting, viewing, and exploring 3D models with history descriptions and AR capabilities.
+2. **Editor**: For editing 3D models, controlling scene properties, and experimenting with animations.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Features
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Museum Viewer
+- **3D Model Display**: Supports `.glb` and `.gltf` files.
+- **Firebase Integration**: Allows users to load 3D models stored in Firebase Cloud Storage.
+- **Model Metadata**: Displays historical information or descriptions associated with the selected model.
+- **Text-to-Speech (TTS)**: Reads aloud the historical information of the model.
+- **AR Support**: Provides AR viewing options via WebXR, compatible with devices like HoloLens.
+- **File Upload**: Enables users to upload and view 3D models directly from their local storage.
 
-### `npm test`
+### Editor
+- **Scene Customization**:
+  - Change background color.
+  - Enable/disable wireframe mode for the 3D model.
+- **Lighting Controls**:
+  - Adjust ambient light intensity.
+  - Modify directional light position and intensity.
+- **Animation Controls**: Play and pause animations embedded in the 3D model.
+- **Shadow Support**: Models cast and receive realistic shadows.
+- **Grid Helper**: Visual aid for understanding object orientation in the scene.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+## Technologies Used
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Frontend
+- **React**: Core library for building the UI.
+- **@react-three/fiber**: For rendering 3D content in the browser.
+- **@react-three/drei**: Provides useful helpers like `Environment` and `OrbitControls`.
+- **Three.js**: Underlying 3D rendering engine.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Backend
+- **Firebase**:
+  - **Cloud Storage**: Stores 3D models and metadata.
+  - **Configuration**: Handles secure API key and storage bucket integration.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Setup and Installation
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Prerequisites
+- Node.js (v14 or later)
+- Firebase project with a configured storage bucket
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Steps
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd ar-museum
+2. Install dependencies:
+   ```bash
+   npm install
+3. Start the development server:
+   ```bash
+   npm start
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Usage
 
-## Learn More
+### Museum Viewer
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+#### Upload Local Files:
+- Click the **"Upload 3D Model"** button.
+- Select a `.glb` or `.gltf` file from your computer.
+- The model will load in the viewer.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+#### Select Firebase Files:
+- Use the dropdown menu to choose a file stored in Firebase.
+- The model and its associated description will appear in the viewer.
 
-### Code Splitting
+#### View in AR:
+- Click the **"View in AR"** button to start the augmented reality experience (WebXR-compatible devices required).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+---
 
-### Analyzing the Bundle Size
+### Editor
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### Load a Model:
+- Use the **file upload** button to load a `.glb` model.
 
-### Making a Progressive Web App
+#### Customize Scene:
+- Change background color, lighting, and toggle wireframe mode using the controls panel.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### Control Animations:
+- Play or pause animations embedded in the model.
 
-### Advanced Configuration
+#### Experiment with Lights:
+- Adjust light position and intensity for better visualization.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+## Future Enhancements
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+1. **Support for More Formats**:
+   - Add compatibility for additional 3D file formats, such as `.obj` and `.fbx`.
 
-### `npm run build` fails to minify
+2. **User Authentication**:
+   - Integrate a user login system to personalize uploaded files and settings.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+3. **Collaborative Editing**:
+   - Enable multiple users to collaboratively edit the same 3D model in real time.
+
+4. **Improved AR Features**:
+   - Real-world scaling for accurate AR representations.
+   - Anchoring and interaction with real-world surfaces.
+
+5. **Performance Optimization**:
+   - Enhance rendering performance for large models and complex scenes.
+
+6. **Model History**:
+   - Add a version control system to track changes made to models over time.
+
+7. **Interactive Tutorials**:
+   - Provide in-app guides and tutorials for using the Viewer and Editor.
+
